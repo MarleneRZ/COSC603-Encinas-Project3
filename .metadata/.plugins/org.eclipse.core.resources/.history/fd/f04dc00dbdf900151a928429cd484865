@@ -1,0 +1,317 @@
+/**
+ * 
+ */
+package edu.towson.cis.cosc603.project4.vendingmachine;
+
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import junit.framework.TestCase;
+/**
+ * @author MarleneRZ
+ *
+ */
+public class VendingMachineTest extends TestCase  {
+
+	VendingMachine vMachine;
+	VendingMachineItem item;
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	
+		vMachine= new VendingMachine();
+		item = new VendingMachineItem("GummyBear", 1.25);
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	
+		vMachine = null;
+		item = null;
+	}
+
+	
+
+	/**
+	 * Test method for {@link edu.towson.cis.cosc603.project4.vendingmachine.VendingMachine#addItem(edu.towson.cis.cosc603.project4.vendingmachine.VendingMachineItem, java.lang.String)}.
+	 */
+	@Test
+	public void testAddItem_EmptySlot() {
+		
+		/*Test slot code A is empty, then add item to slot A
+		 * Expected result: item is at slot code A
+		 */
+		assertEquals(null, vMachine.getItem(VendingMachine.A_CODE));
+		vMachine.addItem(item, VendingMachine.A_CODE);
+		assertSame(item, vMachine.getItem(VendingMachine.A_CODE));
+		
+	}
+	
+	/**
+	 * Test add item to occupied slot A
+	 */
+
+	@Test
+	public void testAddItem_OccupiedSlot() {
+	
+		/* Test: Slot code A is occupied, add item to slot A
+		 * Expected result: VendingMachineException thrown
+		 */
+		try {
+		
+		assertEquals(null, vMachine.getItem(VendingMachine.A_CODE));
+		vMachine.addItem(new VendingMachineItem("Snicker", 1.00), VendingMachine.A_CODE);
+		vMachine.addItem (item,VendingMachine.A_CODE );
+		} catch (VendingMachineException vme) {
+			return;
+		}
+       fail("Expected VendingMachineException - Slot A already occupied");
+		
+
+	}
+
+	/**
+	 * Test add item into an invalid slot E
+	 */
+
+	@Test
+	public void testAddItem_InvalidSlot() {
+	
+		/* Test: Slot code E does not exist, add item to slot E
+		 * Expected result: VendingMachineException thrown
+		 */
+		try {
+			vMachine.addItem(item, "E");
+		} catch (VendingMachineException vme) {
+			return;
+	}
+	fail("Expected VendingMachineException - Slot E does not exist");
+		
+
+	}
+
+	/**
+	 * Remove item from empty slot
+	 */
+	@Test
+	public void testRemoveItem_EmptySlot() {
+		
+		/*
+		 * Test: Remove item from empty slot B
+		 * Expected result:  VendingMachineException thrown
+		 */
+		assertNull(vMachine.getItem(VendingMachine.B_CODE));
+		try {
+			vMachine.removeItem(VendingMachine.B_CODE);
+		} catch (VendingMachineException vme) {
+			return;
+		}
+		fail("Expected VendingMachineException - Slot B is empty");
+
+		
+	}
+	
+	/**
+	 * Remove item from invalid slot E
+	 */
+	@Test
+	public void testRemoveItem_IvalidSlot() {
+		
+		/*
+		 * Test: Remove item from empty slot E
+		 * Expected result:  VendingMachineException thrown
+		 */
+		
+		try {
+			vMachine.removeItem("E");
+		} catch (VendingMachineException vme) {
+			return;
+		}
+		fail("Expected VendingMachineException - Slot E does not exist");
+
+		
+	}
+	
+	/**
+	 * Test method for {@link edu.towson.cis.cosc603.project4.vendingmachine.VendingMachine#removeItem(java.lang.String)}.
+	 */
+	@Test
+	public void testRemoveItem_NoEmptyValidSlot() {
+		
+		//make sure item exists in slot firs
+		vMachine.addItem(item, VendingMachine.A_CODE);
+		assertNotNull(vMachine.getItem(VendingMachine.A_CODE));
+		
+	// Expected result:  item removed and slot A is empty
+			
+		vMachine.removeItem(VendingMachine.A_CODE);
+		assertNull(vMachine.getItem(VendingMachine.A_CODE));
+
+		
+	}
+
+	/**
+	 * Test method for inserting money less than zero
+	 *
+	 */
+	@Test
+	public void testInsertMoney_LessZero() {
+		
+		/*
+		 * Test: Insert money < 0
+		 * Expected result:  VendingMachineException thrown
+		 */
+		
+		try {
+			vMachine.insertMoney(-.75);
+		} catch (VendingMachineException vme) {
+			return;
+		}
+		fail("Expected VendingMachineException - Amount less than 0");
+
+
+	}
+
+	/**
+	 * Test method for inserting money equal to zero
+	 *
+	 */
+	@Test
+	public void testInsertMoney_Zero() {
+		
+		/*
+		 * Test: Insert money equal zero
+		 * Expected result:  balance is 0.00
+		 */
+		
+		//make sure initial balance is 0.00
+		assertEquals(0.00, vMachine.getBalance());
+		vMachine.insertMoney(0.00);
+		assertEquals(0.00, vMachine.getBalance());
+
+
+	}
+	
+	
+	/**
+	 * Test method for inserting money greater than zero
+	 *Inserting 3.50
+	 */
+	@Test
+	public void testInsertMoney_GreaterZero() {
+		
+		/*
+		 * Test: Insert money > 0 . Initial balance is 0.00
+		 * Expected result:  balance is 3.50
+		 */
+		
+		//make sure initial balance is 0.00
+		assertEquals(0.00, vMachine.getBalance());
+		vMachine.insertMoney(3.50);
+		assertEquals(3.50, vMachine.getBalance());
+
+
+	}
+	
+	
+	/**
+	 * Test method for inserting money greater with balance Greater than zero
+	 *Inserting 3.50. Initial balance 5.0
+	 */
+	@Test
+	public void testInsertMoney_BalanceGTZero() {
+		
+		/*
+		 * Test: Insert money 3.50 . Initial balance is 5.00
+		 * Expected result:  balance is 8.50
+		 */
+		
+		//make sure initial balance is 0.00
+		
+		assertEquals(0.00, vMachine.getBalance());
+		vMachine.insertMoney(5.00);
+		assertEquals(5.00, vMachine.getBalance());
+		vMachine.insertMoney(3.50);
+		assertEquals(8.50, vMachine.getBalance());
+
+
+	}
+	/**
+	 * Test Balance starts at zero
+	 */
+	@Test
+	public void testGetBalance_Zero() {
+		
+		/*
+		 * Test: Vending machine balance starts with 0.00
+		 * Expected result: balance is 0.00
+		 */
+		assertEquals(0.00, vMachine.getBalance());
+
+	}
+
+	/**
+	 * Test Balance sGreater than zero
+	 */
+	@Test
+	public void testGetBalance_GTZero() {
+		
+		/*
+		 * Test: Vending machine balance starts with 3.00
+		 * Expected result: balance =3.00
+		 */
+		vMachine.balance = 3.00;
+		assertEquals(3.00, vMachine.balance);
+		assertEquals(vMachine.balance, vMachine.getBalance());
+
+
+	}
+	
+	
+	/**
+	 * Test Balance less than zero
+	 */
+	@Test
+	public void testGetBalance_LTZero() {
+		
+		/*
+		 * Test: Vending machine balance -2.00
+		* EO: VendingMachineException thrown (balance should not be less than 0)
+    	 */
+		
+		
+		try {
+			vMachine.balance = -2.00;
+			double balance = vMachine.getBalance();
+		} catch (VendingMachineException vme) {
+			return;
+		}
+		fail("Expected VendingMachineException - Balance is less than 0");
+
+	}
+	/**
+	 * Test method for {@link edu.towson.cis.cosc603.project4.vendingmachine.VendingMachine#makePurchase(java.lang.String)}.
+	 */
+	@Test
+	public void testMakePurchase() {
+		
+	}
+
+	/**
+	 * Test method for {@link edu.towson.cis.cosc603.project4.vendingmachine.VendingMachine#returnChange()}.
+	 */
+	@Test
+	public void testReturnChange() {
+		
+	}
+
+
+}
