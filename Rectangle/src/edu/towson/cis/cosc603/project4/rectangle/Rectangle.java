@@ -9,6 +9,13 @@ public class Rectangle {
 	/** The p2. */
 	private Point p1, p2;
 	
+	/** The width. */
+	double width; // stores the width value of a rectangle
+	
+	/** The height. */
+	double height; // store the height value of a rectangle
+	
+	
 	/**
 	 * Instantiates a new rectangle.
 	 *
@@ -18,23 +25,44 @@ public class Rectangle {
 	Rectangle(Point p1, Point p2) {
 		this.p1 = p1;
 		this.p2 = p2;
+		
+		//estimating width and height values
+		width = p2.x - p1.x;
+		height = p2.y - p1.y;
+		
 	}
 	
 	/**
 	 * Gets the area.
-	 *
+	 * Area of a rectangle is calculated by multiplying its width with its height.
 	 * @return the area
 	 */
 	public Double getArea() {
-		return Math.abs((p2.x - p1.x) * (p2.y - p1.y));
+		
+		double areaRec; //store the area of a rectangle 
+		
+		if ((width == 0) || (height ==0))
+		{
+			throw new ArithmeticException("This is not a rectangle. Invalid!");
+		}
+		else
+		{
+			areaRec = Math.abs(width * height);// return the absolute value
+		}
+		
+		
+		return areaRec;
 	}
 	
 	/**
 	 * Gets the diagonal.
-	 *
+	 * 
 	 * @return the diagonal
 	 */
 	public Double getDiagonal() {
-		return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
+		
+		double diagonal; //store the diagonal calculation
+		 diagonal  = Math.sqrt(Math.pow((width), 2) + Math.pow((height), 2));
+		return diagonal;
 	}
 }
